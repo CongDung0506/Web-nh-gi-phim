@@ -1,0 +1,22 @@
+{% macro render_field(field) %}
+  <div class="form-group {% if field.errors %}has-error{% endif %}">
+    {{ field.label(class="control-label") }}
+    {% if field.type == 'BooleanField' %}
+      <div class="checkbox">
+        <label>
+          {{ field(**kwargs) }} {{ field.label.text }}
+        </label>
+      </div>
+    {% elif field.type == 'TextAreaField' %}
+      {{ field(class="form-control", rows=3, **kwargs) }}
+    {% else %}
+      {{ field(class="form-control", **kwargs) }}
+    {% endif %}
+
+    {% if field.errors %}
+      {% for error in field.errors %}
+        <span class="help-block">{{ error }}</span>
+      {% endfor %}
+    {% endif %}
+  </div>
+{% endmacro %}

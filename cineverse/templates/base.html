@@ -1,0 +1,342 @@
+{% extends "bootstrap/base.html" %}
+
+{% block title %}{% block page_title %}CineVerse — Nền tảng CMS Đánh giá Phim & Điện ảnh Đỉnh cao{% endblock %}{% endblock %}
+
+{% block styles %}
+{{ super() }}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+  :root {
+    --bg-main: #0d1117;
+    --bg-card: #161b22;
+    --bg-hover: #21262d;
+    --accent-green: #00e054;
+    --accent-hover: #00c749;
+    --accent-gold: #ffb703;
+    --text-primary: #f0f6fc;
+    --text-secondary: #8b949e;
+    --border-color: #30363d;
+  }
+
+  body {
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background-color: var(--bg-main);
+    color: var(--text-primary);
+    min-height: 100vh;
+  }
+
+  /* Modern Glass Navbar */
+  .navbar-inverse {
+    background-color: rgba(13, 17, 23, 0.95);
+    backdrop-filter: blur(12px);
+    border-color: var(--border-color);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    padding: 6px 0;
+  }
+  .navbar-inverse .navbar-brand {
+    color: var(--accent-green);
+    font-weight: 800;
+    font-size: 21px;
+    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .navbar-inverse .navbar-brand:hover {
+    color: #fff;
+    text-shadow: 0 0 12px rgba(0, 224, 84, 0.6);
+  }
+  .navbar-inverse .navbar-nav > li > a {
+    color: var(--text-secondary);
+    font-weight: 500;
+    font-size: 14px;
+    transition: all 0.25s ease;
+  }
+  .navbar-inverse .navbar-nav > li > a:hover {
+    color: #fff;
+  }
+  .navbar-inverse .navbar-nav > .active > a,
+  .navbar-inverse .navbar-nav > .active > a:hover {
+    color: var(--accent-green);
+    background-color: transparent;
+  }
+
+  /* Cards & Panels */
+  .panel, .thumbnail {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+    transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+    color: var(--text-primary);
+  }
+  .panel:hover, .thumbnail:hover {
+    border-color: #58a6ff44;
+  }
+  .panel-default > .panel-heading {
+    background-color: #1a202c;
+    border-bottom: 1px solid var(--border-color);
+    color: #fff;
+    font-weight: 700;
+    border-top-left-radius: 11px;
+    border-top-right-radius: 11px;
+  }
+  .panel-body {
+    color: var(--text-primary);
+  }
+
+  /* Movie Poster Cards */
+  .movie-card {
+    border-radius: 12px;
+    overflow: hidden;
+    position: relative;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    margin-bottom: 24px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+  }
+  .movie-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 16px 36px rgba(0, 224, 84, 0.18);
+    border-color: var(--accent-green);
+  }
+  .movie-poster-wrap {
+    position: relative;
+    overflow: hidden;
+    height: 270px;
+    background: #000;
+  }
+  .movie-poster-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+  }
+  .movie-card:hover .movie-poster-wrap img {
+    transform: scale(1.07);
+  }
+  .movie-rating-badge {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: rgba(13, 17, 23, 0.85);
+    backdrop-filter: blur(6px);
+    border: 1px solid rgba(255, 183, 3, 0.4);
+    color: var(--accent-gold);
+    font-weight: 800;
+    font-size: 13px;
+    padding: 4px 9px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+  }
+  .movie-genre-badge {
+    position: absolute;
+    bottom: 12px;
+    left: 12px;
+    background: rgba(0, 224, 84, 0.9);
+    color: #0b0e14;
+    font-weight: 700;
+    font-size: 11px;
+    padding: 3px 8px;
+    border-radius: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.4);
+  }
+  .movie-genre-badge.genre-romance {
+    background: rgba(244, 63, 94, 0.9);
+    color: #fff;
+    border: 1px solid #fda4af;
+  }
+  .movie-genre-badge.genre-horror {
+    background: rgba(220, 38, 38, 0.9);
+    color: #fff;
+    border: 1px solid #f87171;
+  }
+  .movie-genre-badge.genre-scifi {
+    background: rgba(14, 165, 233, 0.9);
+    color: #fff;
+    border: 1px solid #7dd3fc;
+  }
+  .movie-genre-badge.genre-action {
+    background: rgba(249, 115, 22, 0.9);
+    color: #fff;
+    border: 1px solid #fdba74;
+  }
+  .movie-genre-badge.genre-animation {
+    background: rgba(16, 185, 129, 0.9);
+    color: #052e16;
+    border: 1px solid #6ee7b7;
+  }
+  .movie-genre-badge.genre-drama {
+    background: rgba(139, 92, 246, 0.9);
+    color: #fff;
+    border: 1px solid #c4b5fd;
+  }
+
+  /* Badges & Pills */
+  .badge-score {
+    background: linear-gradient(135deg, #00e054, #00b4d8);
+    color: #0b0e14;
+    font-weight: 800;
+    padding: 5px 10px;
+    border-radius: 6px;
+    font-size: 13px;
+  }
+
+  /* Buttons */
+  .btn-cineverse {
+    background: linear-gradient(135deg, #00e054, #00c749);
+    color: #0b0e14;
+    font-weight: 700;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 16px;
+    transition: all 0.25s ease;
+  }
+  .btn-cineverse:hover, .btn-cineverse:focus {
+    background: linear-gradient(135deg, #00c749, #00a83e);
+    color: #fff;
+    box-shadow: 0 4px 16px rgba(0, 224, 84, 0.4);
+    transform: translateY(-2px);
+  }
+
+  /* Hero Banner */
+  .hero-banner {
+    background: linear-gradient(135deg, rgba(20, 24, 36, 0.92) 0%, rgba(13, 17, 23, 0.98) 100%),
+                url('https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=1600&q=80') center/cover;
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 42px 36px;
+    margin-bottom: 35px;
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.6);
+  }
+  .hero-banner h1 {
+    font-weight: 800;
+    font-size: 38px;
+    color: #fff;
+    margin-top: 0;
+  }
+  .hero-banner p {
+    color: var(--text-secondary);
+    font-size: 16px;
+    max-width: 650px;
+  }
+
+  /* List group items */
+  .list-group-item {
+    background-color: var(--bg-card);
+    border-color: var(--border-color);
+    color: var(--text-primary);
+  }
+  .list-group-item:hover {
+    background-color: var(--bg-hover);
+    color: #fff;
+  }
+
+  /* Alerts */
+  .alert {
+    border-radius: 10px;
+    border: none;
+  }
+
+  /* Footer */
+  footer {
+    border-top: 1px solid var(--border-color);
+    margin-top: 60px;
+    padding: 30px 0;
+    color: var(--text-secondary);
+    font-size: 14px;
+  }
+</style>
+{% endblock %}
+
+{% block navbar %}
+<nav class="navbar navbar-inverse navbar-static-top">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#nav-collapse">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="{{ url_for('home') }}">
+        <i class="fa-solid fa-film" style="color:var(--accent-green);"></i> CineVerse
+      </a>
+    </div>
+
+    <div class="collapse navbar-collapse" id="nav-collapse">
+      <ul class="nav navbar-nav">
+        <li><a href="{{ url_for('home') }}"><i class="fa-solid fa-house"></i> Trang chủ</a></li>
+        <li><a href="{{ url_for('movie_list') }}"><i class="fa-solid fa-clapperboard"></i> Kho Phim Bom Tấn</a></li>
+        <li><a href="{{ url_for('review_list') }}"><i class="fa-solid fa-feather-pointed"></i> Góc Phê Bình</a></li>
+        <li><a href="{{ url_for('ai_log') }}"><i class="fa-solid fa-robot"></i> Nhật Ký AI</a></li>
+      </ul>
+
+      <ul class="nav navbar-nav navbar-right">
+        {% if current_user.is_authenticated %}
+          {% if current_user.can(4) %}
+            <li>
+              <a href="{{ url_for('review_new') }}" style="color:var(--accent-green);font-weight:700;">
+                <i class="fa-solid fa-plus-circle"></i> Viết Review
+              </a>
+            </li>
+          {% endif %}
+          <li class="navbar-text" style="display:flex;align-items:center;">
+            <img src="{{ current_user.gravatar_url(26) }}" width="26" height="26" style="border-radius:50%;margin-right:6px;border:1px solid var(--accent-green);">
+            <a href="{{ url_for('profile', username=current_user.username) }}" style="color:#fff;display:inline-block;padding:0;">
+              <strong>{{ current_user.username }}</strong>
+              <span class="label label-success" style="margin-left:4px;font-size:10px;">{{ current_user.role.name }}</span>
+            </a>
+          </li>
+          <li><a href="{{ url_for('logout') }}"><i class="fa-solid fa-right-from-bracket"></i> Đăng xuất</a></li>
+        {% else %}
+          <li><a href="{{ url_for('login') }}"><i class="fa-solid fa-user"></i> Đăng nhập</a></li>
+          <li>
+            <a href="{{ url_for('register') }}" style="color:var(--accent-green);font-weight:700;">
+              <i class="fa-solid fa-user-plus"></i> Đăng ký
+            </a>
+          </li>
+        {% endif %}
+      </ul>
+    </div>
+  </div>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}
+      {% for m in messages %}
+        <div class="alert alert-info alert-dismissible" role="alert" style="background:#1f2937;color:#60a5fa;border:1px solid #3b82f6;">
+          <button type="button" class="close" data-dismiss="alert" style="color:#fff;">&times;</button>
+          <i class="fa-solid fa-circle-info"></i> {{ m }}
+        </div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+
+  {% block page_content %}{% endblock %}
+
+  <footer class="footer text-center">
+    <p style="margin-bottom:6px;">
+      <strong style="color:var(--accent-green);">🎬 CineVerse CMS</strong> — Nền tảng Đánh giá & Cộng đồng Điện ảnh Hiện đại
+    </p>
+    <p style="font-size:12px;color:var(--text-secondary);">
+      Đồ án môn học PWD301 &middot; Python Flask &middot; SQLAlchemy &middot; Triển khai Cloud Vercel
+    </p>
+  </footer>
+</div>
+{% endblock %}

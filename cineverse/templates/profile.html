@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block page_title %}{{ user.username }} — CineVerse Profile{% endblock %}
+
+{% block page_content %}
+<div class="row" style="margin-top:20px;">
+  <div class="col-md-4">
+    <div class="panel panel-default text-center" style="padding:20px;">
+      <img src="{{ user.gravatar_url(100) }}" class="img-circle" width="100" height="100" style="margin-bottom:15px;box-shadow:0 2px 5px rgba(0,0,0,0.15);">
+      <h3 style="margin-top:0;font-weight:bold;">{{ user.username }}</h3>
+      <p><span class="label label-primary">{{ user.role.name }}</span></p>
+      <p class="text-muted" style="font-size:13px;">{{ user.email }}</p>
+      {% if user.bio %}
+        <p style="font-style:italic;font-size:13px;color:#555;">"{{ user.bio }}"</p>
+      {% endif %}
+
+      <hr>
+      <div class="row">
+        <div class="col-xs-6">
+          <h4><strong>{{ followers_count }}</strong></h4>
+          <span class="text-muted" style="font-size:12px;">Người theo dõi</span>
+        </div>
+        <div class="col-xs-6">
+          <h4><strong>{{ following_count }}</strong></h4>
+          <span class="text-muted" style="font-size:12px;">Đang theo dõi</span>
+        </div>
+      </div>
+
+      {% if current_user.is_authenticated and current_user.id != user.id %}
+        <hr>
+        <form method="POST" action="{{ url_for('toggle_follow', username=user.username) }}">
+          {% if is_following %}
+            <button class="btn btn-default btn-block" type="submit">
+              <span class="glyphicon glyphicon-ok"></span> Đang theo dõi (Bỏ follow)
+            </button>
+          {% else %}
+            <button class="btn btn-success btn-block" type="submit">
+              <span class="glyphicon glyphicon-plus"></span> + Theo dõi nhà phê bình
+            </button>
+          {% endif %}
+        </form>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="col-md-8">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        Các bài viết Review của {{ user.username }} ({{ posts|length }})
+      </div>
+      <div class="panel-body">
+        {% for post in posts %}
+          <div style="margin-bottom:20px;padding-bottom:15px;border-bottom:1px solid #eee;">
+            <h4 style="margin-top:0;">
+              <a href="{{ url_for('review_detail', post_id=post.id) }}">{{ post.title }}</a>
+              <span class="score-badge pull-right">{{ post.score }}/10 ★</span>
+            </h4>
+            <p class="text-muted" style="font-size:12px;">
+              Ngày đăng: {{ post.created_at.strftime('%d/%m/%Y') }}
+              {% if post.movie_title %} &middot; Phim: <strong>{{ post.movie_title }}</strong>{% endif %}
+            </p>
+            <p class="text-muted">{{ post.body_md[:140] }}...</p>
+          </div>
+        {% else %}
+          <p class="text-muted">Người dùng này chưa xuất bản bài đánh giá nào.</p>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,147 @@
+{% extends "base.html" %}
+
+{% block page_title %}Cảm nhận & Đánh giá: {{ movie.title }} — CineVerse{% endblock %}
+
+{% block page_content %}
+<div class="row" style="margin-top:15px;">
+  <!-- Thong tin phim bên trái -->
+  <div class="col-md-4">
+    <div class="movie-card" style="margin-bottom:20px;">
+      <div class="movie-poster-wrap" style="height:380px;">
+        <img src="{{ movie.poster_url }}" alt="{{ movie.title }}">
+        <div class="movie-rating-badge">
+          <i class="fa-solid fa-star"></i> {{ movie.rating_imdb }} IMDb
+        </div>
+        <div class="movie-genre-badge">
+          {{ movie.genre.name }}
+        </div>
+      </div>
+      <div style="padding:20px;">
+        <h3 style="margin-top:0;font-weight:800;color:#fff;font-size:20px;">
+          {{ movie.title }} <span style="font-size:15px;color:var(--text-secondary);">({{ movie.release_year }})</span>
+        </h3>
+        <p style="color:var(--text-secondary);font-size:13px;margin-bottom:8px;">
+          <i class="fa-regular fa-clock"></i> <strong>Thời lượng:</strong> {{ movie.duration_minutes }} phút
+        </p>
+        <p style="color:var(--text-secondary);font-size:13px;margin-bottom:12px;">
+          <i class="fa-solid fa-bullhorn"></i> <strong>Đạo diễn:</strong>
+          {% for d in movie.directors %}
+            <span style="color:#fff;font-weight:600;">{{ d.name }}</span>{% if not loop.last %}, {% endif %}
+          {% endfor %}
+        </p>
+        <p style="font-size:13px;line-height:1.6;color:#94a3b8;border-top:1px solid var(--border-color);padding-top:12px;">
+          {{ movie.summary }}
+        </p>
+        <a href="{{ url_for('movie_list') }}" class="btn btn-block btn-sm" style="background:#21262d;color:#fff;border:1px solid var(--border-color);border-radius:8px;margin-top:14px;padding:8px 0;">
+          <i class="fa-solid fa-arrow-left"></i> Trở về kho phim
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Danh sach binh luan & Đánh giá bên phải -->
+  <div class="col-md-8">
+    <div class="panel panel-default">
+      <div class="panel-heading" style="display:flex;justify-content:space-between;align-items:center;">
+        <span style="font-size:16px;">
+          <i class="fa-regular fa-comments" style="color:var(--accent-green);"></i> Thảo Luận & Đánh Giá Khán Giả
+        </span>
+        <span class="badge" style="background:var(--accent-green);color:#0b0e14;font-weight:800;">
+          {{ comments|length }} nhận xét
+        </span>
+      </div>
+      <div class="panel-body" style="padding:24px;">
+        {% if current_user.is_authenticated %}
+          <!-- Form gửi bình luận nhận xét -->
+          <div style="background:#0d1117;border:1px solid var(--border-color);border-radius:12px;padding:18px;margin-bottom:28px;">
+            <h4 style="margin-top:0;font-weight:700;font-size:15px;color:#fff;display:flex;align-items:center;gap:8px;">
+              <i class="fa-solid fa-pen" style="color:var(--accent-green);"></i> Viết cảm nhận của bạn về tác phẩm này
+            </h4>
+            <form method="POST" action="{{ url_for('add_comment', movie_id=movie.id) }}">
+              <div class="row">
+                <div class="col-xs-12 col-sm-6" style="margin-bottom:12px;">
+                  <label for="rating" style="font-size:12px;color:var(--text-secondary);font-weight:600;">Chấm điểm (1-5 sao):</label>
+                  <select name="rating" id="rating" class="form-control input-sm" style="background:#161b22;color:#fff;border-color:var(--border-color);border-radius:6px;">
+                    <option value="5">⭐⭐⭐⭐⭐ (5 sao - Tuyệt tác đỉnh cao)</option>
+                    <option value="4">⭐⭐⭐⭐ (4 sao - Rất đáng xem)</option>
+                    <option value="3">⭐⭐⭐ (3 sao - Mức độ khá)</option>
+                    <option value="2">⭐⭐ (2 sao - Tạm ổn)</option>
+                    <option value="1">⭐ (1 sao - Thất vọng)</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group" style="margin-bottom:12px;">
+                <label for="body_md" style="font-size:12px;color:var(--text-secondary);font-weight:600;">Nội dung nhận xét (Hỗ trợ Markdown):</label>
+                <textarea class="form-control" id="body_md" name="body_md" rows="3" placeholder="Chia sẻ cảm nhận, góc nhìn của bạn về kịch bản, diễn xuất, âm nhạc... (Hỗ trợ **đậm**, *nghiêng*, trích dẫn)" required style="background:#161b22;color:#fff;border-color:var(--border-color);border-radius:8px;"></textarea>
+                <p style="font-size:11px;color:var(--text-secondary);margin-top:5px;margin-bottom:0;">
+                  <i class="fa-solid fa-shield-halved" style="color:var(--accent-green);"></i> Hệ thống tự động lọc mã độc HTML/XSS để bảo vệ cộng đồng.
+                </p>
+              </div>
+              <button class="btn btn-cineverse btn-sm" type="submit">
+                <i class="fa-solid fa-paper-plane"></i> Gửi nhận xét ngay
+              </button>
+            </form>
+          </div>
+        {% else %}
+          <div class="alert alert-warning" style="background:#1c1917;color:#fbbf24;border:1px solid #78350f;border-radius:8px;">
+            <i class="fa-solid fa-lock"></i> Vui lòng <a href="{{ url_for('login') }}" style="color:#fff;text-decoration:underline;font-weight:bold;">Đăng nhập</a> để tham gia viết nhận xét và theo dõi các nhà phê bình.
+          </div>
+        {% endif %}
+
+        <!-- Danh sách bình luận -->
+        {% for c in comments %}
+          <div class="media" style="padding:16px 0;border-bottom:1px solid var(--border-color);">
+            <div class="media-left">
+              <a href="{{ url_for('profile', username=c.author.username) }}">
+                <img src="{{ c.author.gravatar_url(44) }}" class="media-object img-circle" width="44" height="44" alt="{{ c.author.username }}" style="border:2px solid var(--border-color);">
+              </a>
+            </div>
+            <div class="media-body">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+                <div>
+                  <a href="{{ url_for('profile', username=c.author.username) }}" style="color:#fff;font-weight:700;font-size:14px;">
+                    {{ c.author.username }}
+                  </a>
+                  <span class="label label-default" style="background:#21262d;border:1px solid var(--border-color);color:var(--accent-green);font-size:10px;margin-left:4px;">
+                    {{ c.author.role.name }}
+                  </span>
+                  <span style="color:var(--accent-gold);margin-left:8px;font-size:12px;">
+                    {% for _ in range(c.rating) %}★{% endfor %}
+                  </span>
+                </div>
+
+                <!-- Nút Follow ngay tại bình luận -->
+                {% if current_user.is_authenticated and current_user.id != c.author.id %}
+                  <form method="POST" action="{{ url_for('toggle_follow', username=c.author.username) }}?next={{ url_for('movie_comments', movie_id=movie.id) }}" style="margin:0;">
+                    {% if current_user.is_following(c.author) %}
+                      <button type="submit" class="btn btn-xs" style="background:#21262d;color:var(--accent-green);border:1px solid var(--accent-green);border-radius:20px;padding:3px 10px;">
+                        <i class="fa-solid fa-check"></i> Đang follow
+                      </button>
+                    {% else %}
+                      <button type="submit" class="btn btn-xs" style="background:#1e293b;color:#fff;border:1px solid var(--border-color);border-radius:20px;padding:3px 10px;">
+                        <i class="fa-solid fa-user-plus"></i> Follow
+                      </button>
+                    {% endif %}
+                  </form>
+                {% endif %}
+              </div>
+
+              <div style="color:#cbd5e1;font-size:13px;line-height:1.6;">
+                {{ c.body_html|safe }}
+              </div>
+              <div style="font-size:11px;color:var(--text-secondary);margin-top:6px;">
+                <i class="fa-regular fa-clock"></i> {{ c.created_at.strftime('%d/%m/%Y lúc %H:%M') }}
+              </div>
+            </div>
+          </div>
+        {% else %}
+          <div style="text-align:center;padding:30px 0;color:var(--text-secondary);">
+            <i class="fa-regular fa-comment-dots" style="font-size:36px;margin-bottom:10px;opacity:0.5;"></i>
+            <p>Chưa có cảm nhận nào cho bộ phim này. Hãy là người đầu tiên chia sẻ góc nhìn!</p>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

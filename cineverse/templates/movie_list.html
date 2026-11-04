@@ -1,0 +1,176 @@
+{% extends "base.html" %}
+
+{% block page_title %}Kho Tác Phẩm Điện Ảnh — CineVerse{% endblock %}
+
+{% block page_content %}
+<!-- Header Kho Phim -->
+<div style="margin-bottom:28px;">
+  <div class="row" style="display:flex;align-items:center;flex-wrap:wrap;">
+    <div class="col-sm-7">
+      <h2 style="font-weight:800;color:#fff;margin:0 0 6px;">
+        <i class="fa-solid fa-clapperboard" style="color:var(--accent-green);"></i> Kho Tác Phẩm Điện Ảnh
+      </h2>
+      <p style="color:var(--text-secondary);margin:0;font-size:14px;">
+        Khám phá các kiệt tác màn ảnh đa thể loại: Tình cảm sâu lắng, Kinh dị giật gân, Bom tấn viễn tưởng, Anime và nhiều hơn nữa.
+      </p>
+    </div>
+    <div class="col-sm-5 text-right">
+      <!-- O tim kiem nhanh -->
+      <form method="GET" action="{{ url_for('movie_list') }}" style="display:inline-flex;max-width:320px;width:100%;margin-top:8px;">
+        {% if active_genre %}<input type="hidden" name="genre" value="{{ active_genre }}">{% endif %}
+        <div class="input-group" style="width:100%;">
+          <input type="text" name="q" value="{{ search_q or '' }}" class="form-control" placeholder="Tìm tên phim..." style="background:#161b22;border:1px solid var(--border-color);color:#fff;border-radius:20px 0 0 20px;padding-left:16px;">
+          <span class="input-group-btn">
+            <button class="btn btn-default" type="submit" style="background:#21262d;border:1px solid var(--border-color);color:#00e054;border-radius:0 20px 20px 0;">
+              <i class="fa-solid fa-magnifying-glass"></i>
+            </button>
+          </span>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Thanh Loc The Loai (Genre Filter Tabs) -->
+<div style="background:#161b22;border:1px solid var(--border-color);border-radius:14px;padding:12px 18px;margin-bottom:28px;display:flex;align-items:center;flex-wrap:wrap;gap:8px;">
+  <span style="font-size:13px;font-weight:700;color:var(--text-secondary);margin-right:6px;">
+    <i class="fa-solid fa-filter"></i> Thể loại:
+  </span>
+
+  <a href="{{ url_for('movie_list', q=search_q) }}" 
+     class="badge-filter {% if not active_genre %}active{% endif %}">
+    Tất Cả ({{ movies|length if not active_genre else 'Đầy Đủ' }})
+  </a>
+
+  {% for g in genres %}
+    <a href="{{ url_for('movie_list', genre=g.id, q=search_q) }}" 
+       class="badge-filter {% if active_genre == g.id %}active{% endif %}">
+      {% if 'Tình Cảm' in g.name %}<i class="fa-solid fa-heart" style="color:#fb7185;margin-right:4px;"></i>
+      {% elif 'Kinh Dị' in g.name %}<i class="fa-solid fa-ghost" style="color:#ef4444;margin-right:4px;"></i>
+      {% elif 'Sci-Fi' in g.name %}<i class="fa-solid fa-rocket" style="color:#38bdf8;margin-right:4px;"></i>
+      {% elif 'Hành Động' in g.name %}<i class="fa-solid fa-fire" style="color:#fb923c;margin-right:4px;"></i>
+      {% elif 'Hoạt Hình' in g.name %}<i class="fa-solid fa-wand-magic-sparkles" style="color:#34d399;margin-right:4px;"></i>
+      {% else %}<i class="fa-solid fa-masks-theater" style="color:#c084fc;margin-right:4px;"></i>
+      {% endif %}
+      {{ g.name }}
+    </a>
+  {% endfor %}
+</div>
+
+<style>
+.badge-filter {
+  display:inline-flex;
+  align-items:center;
+  background:#21262d;
+  color:#cbd5e1;
+  text-decoration:none !important;
+  font-size:13px;
+  font-weight:600;
+  padding:6px 14px;
+  border-radius:20px;
+  border:1px solid var(--border-color);
+  transition:all 0.2s ease;
+}
+.badge-filter:hover {
+  background:#30363d;
+  color:#fff;
+  border-color:#58a6ff;
+  transform:translateY(-1px);
+}
+.badge-filter.active {
+  background:rgba(0, 224, 84, 0.15);
+  color:#00e054;
+  border-color:#00e054;
+  box-shadow:0 0 10px rgba(0, 224, 84, 0.2);
+}
+.movie-genre-badge.genre-romance {
+  background:rgba(244, 63, 94, 0.85);
+  border:1px solid #fda4af;
+}
+.movie-genre-badge.genre-horror {
+  background:rgba(220, 38, 38, 0.85);
+  border:1px solid #f87171;
+}
+.movie-genre-badge.genre-scifi {
+  background:rgba(14, 165, 233, 0.85);
+  border:1px solid #7dd3fc;
+}
+.movie-genre-badge.genre-action {
+  background:rgba(249, 115, 22, 0.85);
+  border:1px solid #fdba74;
+}
+.movie-genre-badge.genre-animation {
+  background:rgba(16, 185, 129, 0.85);
+  border:1px solid #6ee7b7;
+}
+.movie-genre-badge.genre-drama {
+  background:rgba(139, 92, 246, 0.85);
+  border:1px solid #c4b5fd;
+}
+</style>
+
+<!-- Danh sach Phim dang luoi Responsive -->
+<div class="row">
+  {% for movie in movies %}
+    <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3" style="margin-bottom:24px;">
+      <div class="movie-card" style="height:100%;display:flex;flex-direction:column;justify-content:space-between;">
+        <div>
+          <div class="movie-poster-wrap">
+            <img src="{{ movie.poster_url }}" alt="{{ movie.title }}" loading="lazy" style="aspect-ratio:2/3;object-fit:cover;width:100%;">
+            <div class="movie-rating-badge">
+              <i class="fa-solid fa-star"></i> {{ movie.rating_imdb }}
+            </div>
+            
+            {% set g_lower = movie.genre.name|lower %}
+            {% if 'tình cảm' in g_lower %}
+              <div class="movie-genre-badge genre-romance"><i class="fa-solid fa-heart"></i> Tình Cảm</div>
+            {% elif 'kinh dị' in g_lower %}
+              <div class="movie-genre-badge genre-horror"><i class="fa-solid fa-ghost"></i> Kinh Dị</div>
+            {% elif 'sci-fi' in g_lower %}
+              <div class="movie-genre-badge genre-scifi"><i class="fa-solid fa-rocket"></i> Viễn Tưởng</div>
+            {% elif 'hành động' in g_lower %}
+              <div class="movie-genre-badge genre-action"><i class="fa-solid fa-fire"></i> Hành Động</div>
+            {% elif 'hoạt hình' in g_lower %}
+              <div class="movie-genre-badge genre-animation"><i class="fa-solid fa-wand-magic-sparkles"></i> Hoạt Hình</div>
+            {% else %}
+              <div class="movie-genre-badge genre-drama"><i class="fa-solid fa-masks-theater"></i> Tâm Lý</div>
+            {% endif %}
+          </div>
+
+          <div style="padding:16px;">
+            <h4 style="font-size:16px;font-weight:700;margin:0 0 6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+              <a href="{{ url_for('movie_comments', movie_id=movie.id) }}" style="color:#fff;" title="{{ movie.title }}">{{ movie.title }}</a>
+            </h4>
+
+            <div style="font-size:12px;color:var(--text-secondary);margin-bottom:10px;display:flex;justify-content:space-between;">
+              <span><i class="fa-regular fa-calendar"></i> {{ movie.release_year }}</span>
+              <span><i class="fa-regular fa-clock"></i> {{ movie.duration_minutes }} phút</span>
+            </div>
+
+            <p style="font-size:12px;color:#94a3b8;height:52px;overflow:hidden;line-height:1.5;margin-bottom:14px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;">
+              {{ movie.summary }}
+            </p>
+          </div>
+        </div>
+
+        <div style="padding:0 16px 16px;">
+          <a href="{{ url_for('movie_comments', movie_id=movie.id) }}" class="btn btn-block btn-sm" style="background:#21262d;color:var(--accent-green);font-weight:700;border:1px solid var(--border-color);border-radius:8px;padding:8px 0;transition:all 0.2s;">
+            <i class="fa-regular fa-comments"></i> Bình luận ({{ movie.comments|length }}) & Chi tiết
+          </a>
+        </div>
+      </div>
+    </div>
+  {% else %}
+    <div class="col-md-12">
+      <div class="alert alert-info" style="background:#161b22;border-color:var(--border-color);color:#94a3b8;border-radius:12px;text-align:center;padding:40px 20px;">
+        <i class="fa-solid fa-film-slash" style="font-size:36px;margin-bottom:14px;color:#64748b;"></i>
+        <h4 style="color:#fff;font-weight:700;">Không tìm thấy bộ phim phù hợp</h4>
+        <p>Vui lòng thử chọn thể loại khác hoặc xóa từ khóa tìm kiếm.</p>
+        <a href="{{ url_for('movie_list') }}" class="btn btn-sm btn-success" style="background:var(--accent-green);color:#0d1117;font-weight:700;border:none;border-radius:20px;padding:6px 18px;margin-top:10px;">
+          Xem tất cả phim
+        </a>
+      </div>
+    </div>
+  {% endfor %}
+</div>
+{% endblock %}

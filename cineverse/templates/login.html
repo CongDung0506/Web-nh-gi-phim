@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% from "_macros.html" import render_field %}
+
+{% block page_title %}Đăng nhập — CineVerse{% endblock %}
+
+{% block page_content %}
+<div class="row" style="margin-top:40px;">
+  <div class="col-md-5 col-md-offset-3 col-sm-8 col-sm-offset-2">
+    <div class="panel panel-default" style="border:1px solid var(--border-color);border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,0.5);">
+      <div class="panel-heading" style="padding:24px 20px 16px;text-align:center;background:#161b22;border-bottom:1px solid var(--border-color);">
+        <i class="fa-solid fa-clapperboard" style="font-size:32px;color:var(--accent-green);margin-bottom:8px;"></i>
+        <h3 style="margin:0;font-weight:800;color:#fff;font-size:20px;">Đăng Nhập CineVerse</h3>
+        <p style="margin-top:6px;font-size:13px;color:var(--text-secondary);margin-bottom:0;">Tham gia cộng đồng khán giả & đánh giá điện ảnh</p>
+      </div>
+      <div class="panel-body" style="padding:28px;">
+        <form method="POST" novalidate>
+          {{ form.hidden_tag() }}
+
+          <div class="form-group">
+            <label style="color:#cbd5e1;font-size:13px;font-weight:600;">Tên đăng nhập hoặc Email:</label>
+            {{ form.username_or_email(class="form-control", placeholder="Nhập username hoặc email...", style="background:#0d1117;color:#fff;border-color:var(--border-color);border-radius:8px;padding:10px 14px;height:42px;") }}
+          </div>
+
+          <div class="form-group">
+            <label style="color:#cbd5e1;font-size:13px;font-weight:600;">Mật khẩu:</label>
+            {{ form.password(class="form-control", placeholder="Nhập mật khẩu...", style="background:#0d1117;color:#fff;border-color:var(--border-color);border-radius:8px;padding:10px 14px;height:42px;") }}
+          </div>
+
+          <div class="checkbox" style="color:var(--text-secondary);font-size:13px;">
+            <label>
+              {{ form.remember_me() }} Ghi nhớ đăng nhập
+            </label>
+          </div>
+
+          <div style="margin-top:22px;">
+            <button type="submit" class="btn btn-cineverse btn-block btn-lg" style="height:44px;font-size:15px;">
+              <i class="fa-solid fa-right-to-bracket"></i> Đăng nhập
+            </button>
+          </div>
+        </form>
+
+        <div style="border-top:1px solid var(--border-color);margin:20px 0;"></div>
+        <p class="text-center" style="font-size:13px;color:var(--text-secondary);margin-bottom:0;">
+          Chưa có tài khoản? <a href="{{ url_for('register') }}" style="color:var(--accent-green);font-weight:700;">Đăng ký ngay tại đây</a>
+        </p>
+
+        <div style="margin-top:20px;padding:12px;background:#0d1117;border-radius:8px;border:1px dashed var(--border-color);font-size:12px;color:var(--text-secondary);">
+          <strong style="color:#fff;">Tài khoản mẫu:</strong><br>
+          - Admin: <code>christopher_nolan</code> / <code>pass123</code><br>
+          - Critic: <code>roger_ebert</code> / <code>pass123</code><br>
+          - Member: <code>mai_cinephile</code> / <code>pass123</code>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
