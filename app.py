@@ -66,7 +66,7 @@ def auto_init_database():
     if not getattr(app, "_db_initialized", False):
         try:
             db.create_all()
-            if User.query.first() is None:
+            if User.query.first() is None or Movie.query.count() < 15:
                 from seed_cinema import seed_data_internal
                 seed_data_internal()
             app._db_initialized = True
@@ -239,8 +239,24 @@ def review_new():
 # --- Movies & Comments (Markdown gioi han + Sanitize) ------------------------
 @app.route("/movies")
 def movie_list():
-    movies = Movie.query.order_by(Movie.release_year.desc()).all()
-    return render_template("movie_list.html", movies=movies)
+    genre_id = request.args.get("genre", type=int)
+    search_q = request.args.get("q", "").strip()
+
+    query = Movie.query
+    if genre_id:
+        query = query.filter_by(genre_id=genre_id)
+    if search_q:
+        query = query.filter(Movie.title.ilike(f"%{search_q}%"))
+
+    movies = query.order_by(Movie.rating_imdb.desc(), Movie.release_year.desc()).all()
+    genres = Genre.query.order_by(Genre.id).all()
+    return render_template(
+        "movie_list.html",
+        movies=movies,
+        genres=genres,
+        active_genre=genre_id,
+        search_q=search_q
+    )
 
 
 @app.route("/movies/<int:movie_id>/comments")

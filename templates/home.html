@@ -1,83 +1,184 @@
 {% extends "base.html" %}
 
-{% block page_title %}Trang chủ — CineVerse{% endblock %}
+{% block page_title %}Trang chủ — CineVerse Điện ảnh{% endblock %}
 
 {% block page_content %}
+<!-- Hero Banner -->
+<div class="hero-banner">
+  <div class="row">
+    <div class="col-md-8">
+      <h1>Khám Phá & Đánh Giá <br><span style="color:var(--accent-green);">Thế Giới Điện Ảnh</span></h1>
+      <p>Cộng đồng phê bình phim độc lập dành cho những người yêu nghệ thuật thứ 7. Theo dõi các nhà phê bình hàng đầu, thảo luận và chia sẻ cảm nhận sâu sắc về từng khung hình.</p>
+      <div style="margin-top:24px;display:flex;gap:12px;flex-wrap:wrap;">
+        <a href="{{ url_for('movie_list') }}" class="btn btn-cineverse">
+          <i class="fa-solid fa-play"></i> Khám phá kho phim
+        </a>
+        {% if current_user.is_authenticated and current_user.can(4) %}
+          <a href="{{ url_for('review_new') }}" class="btn btn-default" style="border-radius:8px;font-weight:600;padding:8px 16px;background:#21262d;color:#fff;border-color:var(--border-color);">
+            <i class="fa-solid fa-pen-nib"></i> Viết bài đánh giá
+          </a>
+        {% endif %}
+      </div>
+    </div>
+    <div class="col-md-4 hidden-xs hidden-sm text-center">
+      <div style="background:rgba(0,0,0,0.4);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:20px;backdrop-filter:blur(10px);">
+        <i class="fa-solid fa-award" style="font-size:36px;color:var(--accent-gold);margin-bottom:10px;"></i>
+        <h4 style="font-weight:700;color:#fff;">Cộng Đồng Phê Bình</h4>
+        <p style="font-size:13px;color:var(--text-secondary);margin-bottom:0;">
+          Phân quyền Nhà phê bình (Critic), Hệ thống Follower, Đánh giá Markdown bảo mật chống XSS.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Featured Movies Horizontal Section -->
+<div style="margin-bottom:35px;">
+  <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:18px;">
+    <div>
+      <h3 style="margin:0;font-weight:800;font-size:22px;color:#fff;">
+        <i class="fa-solid fa-fire" style="color:#ef4444;"></i> Phim Được Đánh Giá Cao Nhất
+      </h3>
+      <p style="margin:4px 0 0;font-size:13px;color:var(--text-secondary);">Top tác phẩm kinh điển nhận điểm số kỷ lục từ giới chuyên môn</p>
+    </div>
+    <a href="{{ url_for('movie_list') }}" style="color:var(--accent-green);font-weight:600;font-size:13px;">
+      Xem tất cả ({{ featured_movies|length }}+) &rarr;
+    </a>
+  </div>
+
+  <div class="row">
+    {% for movie in featured_movies %}
+      <div class="col-xs-6 col-sm-6 col-md-3">
+        <div class="movie-card">
+          <div class="movie-poster-wrap">
+            <img src="{{ movie.poster_url }}" alt="{{ movie.title }}" loading="lazy">
+            <div class="movie-rating-badge">
+              <i class="fa-solid fa-star"></i> {{ movie.rating_imdb }}
+            </div>
+            {% set g_lower = movie.genre.name|lower %}
+            {% if 'tình cảm' in g_lower %}
+              <div class="movie-genre-badge genre-romance"><i class="fa-solid fa-heart"></i> Tình Cảm</div>
+            {% elif 'kinh dị' in g_lower %}
+              <div class="movie-genre-badge genre-horror"><i class="fa-solid fa-ghost"></i> Kinh Dị</div>
+            {% elif 'sci-fi' in g_lower %}
+              <div class="movie-genre-badge genre-scifi"><i class="fa-solid fa-rocket"></i> Viễn Tưởng</div>
+            {% elif 'hành động' in g_lower %}
+              <div class="movie-genre-badge genre-action"><i class="fa-solid fa-fire"></i> Hành Động</div>
+            {% elif 'hoạt hình' in g_lower %}
+              <div class="movie-genre-badge genre-animation"><i class="fa-solid fa-wand-magic-sparkles"></i> Hoạt Hình</div>
+            {% else %}
+              <div class="movie-genre-badge genre-drama"><i class="fa-solid fa-masks-theater"></i> Tâm Lý</div>
+            {% endif %}
+          </div>
+          <div style="padding:14px;">
+            <h4 style="font-size:15px;font-weight:700;margin:0 0 6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+              <a href="{{ url_for('movie_comments', movie_id=movie.id) }}" style="color:#fff;">{{ movie.title }}</a>
+            </h4>
+            <div style="font-size:12px;color:var(--text-secondary);margin-bottom:10px;">
+              <span>{{ movie.release_year }}</span> &middot; <span>{{ movie.duration_minutes }} phút</span>
+            </div>
+            <a href="{{ url_for('movie_comments', movie_id=movie.id) }}" class="btn btn-block btn-xs" style="background:#21262d;color:var(--accent-green);font-weight:600;border:1px solid var(--border-color);border-radius:6px;padding:6px 0;">
+              <i class="fa-regular fa-comment-dots"></i> Thảo luận ({{ movie.comments|length }})
+            </a>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+
+<!-- Main Feed & Sidebar -->
 <div class="row">
   <div class="col-md-8">
-    <div class="page-header" style="margin-top:10px;">
-      <h2>Bài viết Review Phim mới nhất</h2>
-      <p class="text-muted">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;border-bottom:1px solid var(--border-color);padding-bottom:12px;">
+      <h3 style="margin:0;font-weight:800;font-size:22px;color:#fff;">
+        <i class="fa-solid fa-newspaper" style="color:#38bdf8;"></i> Bài Viết & Phê Bình Mới Nhất
+      </h3>
+      <div>
         {% if show_followed %}
-          Đang lọc hiển thị bài viết từ <strong>những nhà phê bình bạn đang theo dõi</strong>.
-          <a href="{{ url_for('home', show='all') }}" class="btn btn-xs btn-default">Xem tất cả bài viết</a>
+          <a href="{{ url_for('home', show='all') }}" class="btn btn-xs btn-default" style="background:#21262d;color:#fff;border-color:var(--border-color);">
+            <i class="fa-solid fa-globe"></i> Xem tất cả
+          </a>
         {% else %}
-          Đang hiển thị <strong>tất cả</strong> bài viết đánh giá trong cộng đồng.
           {% if current_user.is_authenticated %}
-            <a href="{{ url_for('home', show='followed') }}" class="btn btn-xs btn-primary">Chỉ xem người tôi follow</a>
+            <a href="{{ url_for('home', show='followed') }}" class="btn btn-xs btn-cineverse">
+              <i class="fa-solid fa-user-check"></i> Đang theo dõi
+            </a>
           {% endif %}
         {% endif %}
-      </p>
+      </div>
     </div>
 
     {% for post in posts %}
-      <div class="panel panel-default">
-        <div class="panel-body">
+      <div class="panel panel-default" style="margin-bottom:20px;">
+        <div class="panel-body" style="padding:20px;">
           <div class="media">
             <div class="media-left">
-              <img src="{{ post.author.gravatar_url(48) }}" class="media-object img-circle" width="48" height="48">
+              <a href="{{ url_for('profile', username=post.author.username) }}">
+                <img src="{{ post.author.gravatar_url(50) }}" class="media-object img-circle" width="50" height="50" style="border:2px solid var(--accent-green);">
+              </a>
             </div>
             <div class="media-body">
-              <h3 class="media-heading" style="margin-top:0;">
-                <a href="{{ url_for('review_detail', post_id=post.id) }}">{{ post.title }}</a>
-              </h3>
-              <p class="text-muted" style="font-size:13px;margin-bottom:8px;">
-                Tác giả: <a href="{{ url_for('profile', username=post.author.username) }}">{{ post.author.username }}</a>
-                &middot; Ngày đăng: {{ post.created_at.strftime('%d/%m/%Y') }}
+              <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+                <h4 style="margin-top:0;font-weight:800;font-size:18px;">
+                  <a href="{{ url_for('review_detail', post_id=post.id) }}" style="color:#fff;">{{ post.title }}</a>
+                </h4>
+                <span class="badge-score" style="white-space:nowrap;margin-left:12px;">
+                  <i class="fa-solid fa-star"></i> {{ post.score }}/10
+                </span>
+              </div>
+              <p style="font-size:12px;color:var(--text-secondary);margin-bottom:10px;">
+                Bởi <a href="{{ url_for('profile', username=post.author.username) }}" style="color:var(--accent-green);font-weight:600;">{{ post.author.username }}</a>
+                &middot; <i class="fa-regular fa-clock"></i> {{ post.created_at.strftime('%d/%m/%Y') }}
                 {% if post.movie_title %}
-                  &middot; Phim: <strong>{{ post.movie_title }}</strong>
+                  &middot; <span style="color:#94a3b8;">Phim:</span> <strong style="color:#e2e8f0;">{{ post.movie_title }}</strong>
                 {% endif %}
-                <span class="score-badge pull-right">{{ post.score }}/10 ★</span>
               </p>
-              <p class="text-muted" style="margin-bottom:0;">
-                {{ post.body_md[:160] }}...
-                <a href="{{ url_for('review_detail', post_id=post.id) }}">Đọc tiếp &rarr;</a>
+              <p style="color:#cbd5e1;font-size:14px;line-height:1.6;margin-bottom:12px;">
+                {{ post.body_md[:190] }}...
               </p>
+              <a href="{{ url_for('review_detail', post_id=post.id) }}" style="color:var(--accent-green);font-weight:700;font-size:13px;text-decoration:none;">
+                Đọc toàn bộ bài phân tích <i class="fa-solid fa-arrow-right"></i>
+              </a>
             </div>
           </div>
         </div>
       </div>
     {% else %}
-      <div class="alert alert-warning">
-        Không có bài viết nào phù hợp. (Nếu bạn đang bật bộ lọc "Chỉ xem người tôi follow", hãy thử theo dõi thêm các nhà phê bình khác!)
+      <div class="alert alert-warning" style="background:#27272a;color:#facc15;border:1px solid #713f12;">
+        <i class="fa-solid fa-triangle-exclamation"></i> Không có bài viết nào phù hợp. (Nếu bạn đang bật bộ lọc "Chỉ xem người tôi follow", hãy thử theo dõi thêm các nhà phê bình khác!)
       </div>
     {% endfor %}
   </div>
 
   <div class="col-md-4">
-    <div class="panel panel-default" style="margin-top:20px;">
-      <div class="panel-heading">🎬 Phim Được Đánh Giá Cao</div>
-      <div class="list-group">
-        {% for movie in featured_movies %}
-          <a href="{{ url_for('movie_comments', movie_id=movie.id) }}" class="list-group-item">
-            <h5 class="list-group-item-heading" style="font-weight:bold;">
-              {{ movie.title }} ({{ movie.release_year }})
-              <span class="label label-success pull-right">{{ movie.rating_imdb }} ★</span>
-            </h5>
-            <p class="list-group-item-text text-muted" style="font-size:12px;">
-              {{ movie.genre.name }} &middot; {{ movie.duration_minutes }} phút
-            </p>
+    <div class="panel panel-default" style="margin-bottom:24px;">
+      <div class="panel-heading">
+        <i class="fa-solid fa-users" style="color:var(--accent-green);"></i> Cộng Đồng Nhà Phê Bình
+      </div>
+      <div class="panel-body" style="font-size:13px;line-height:1.6;color:var(--text-secondary);">
+        <p>Tham gia đánh giá các tác phẩm điện ảnh kinh điển cùng các đạo diễn và chuyên gia hàng đầu:</p>
+        <ul style="padding-left:18px;margin-bottom:14px;">
+          <li><strong style="color:#fff;">Christopher Nolan</strong> (Đạo diễn / Admin)</li>
+          <li><strong style="color:#fff;">Roger Ebert</strong> (Nhà phê bình đoạt giải Pulitzer)</li>
+          <li><strong style="color:#fff;">Mai Cinephile</strong> (Khán giả yêu điện ảnh)</li>
+        </ul>
+        {% if not current_user.is_authenticated %}
+          <a href="{{ url_for('register') }}" class="btn btn-cineverse btn-block btn-sm">
+            Tạo tài khoản tham gia ngay
           </a>
-        {% endfor %}
+        {% endif %}
       </div>
     </div>
 
-    <div class="panel panel-info">
-      <div class="panel-heading">💡 Hướng dẫn sử dụng</div>
-      <div class="panel-body" style="font-size:13px;">
-        <p>1. Bấm <strong>Đăng nhập</strong> hoặc <strong>Đăng ký</strong> tài khoản trên thanh menu.</p>
-        <p>2. Khi đọc bình luận tại mục <strong>Kho phim</strong>, bạn có thể bấm <code>Follow</code> những người nhận xét hay.</p>
-        <p>3. Bấm <strong>"Chỉ xem người tôi follow"</strong> để cá nhân hoá bảng tin theo những nhà phê bình bạn quan tâm.</p>
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <i class="fa-solid fa-lightbulb" style="color:var(--accent-gold);"></i> Tính Năng Nổi Bật CMS
+      </div>
+      <div class="panel-body" style="font-size:13px;color:var(--text-secondary);line-height:1.6;">
+        <p><i class="fa-solid fa-check" style="color:var(--accent-green);"></i> <strong>Hệ thống Follow:</strong> Theo dõi nhà phê bình bạn yêu thích để cá nhân hóa bảng tin.</p>
+        <p><i class="fa-solid fa-check" style="color:var(--accent-green);"></i> <strong>Soạn thảo Markdown:</strong> Hỗ trợ định dạng in đậm, trích dẫn, tiêu đề sinh động.</p>
+        <p><i class="fa-solid fa-check" style="color:var(--accent-green);"></i> <strong>Bảo mật Chống XSS:</strong> Lọc thẻ nguy hiểm (Bleach Whitelist) tuyệt đối an toàn.</p>
       </div>
     </div>
   </div>
