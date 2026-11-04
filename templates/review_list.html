@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% block page_title %}Danh sách bài viết Review — CineVerse CMS{% endblock %}
+
+{% block page_content %}
+<div class="row">
+  <div class="col-md-9">
+    <div class="page-header" style="margin-top:10px;">
+      <h2>
+        Bài viết Phê bình & Đánh giá Điện ảnh
+        {% if current_user.is_authenticated and current_user.can(4) %}
+          <a href="{{ url_for('review_new') }}" class="btn btn-success pull-right">+ Viết Review mới</a>
+        {% endif %}
+      </h2>
+      <p class="text-muted">Chuyên mục CMS với hỗ trợ định dạng Markdown, phân trang chuẩn và xử lý an toàn nội dung.</p>
+    </div>
+
+    {% for post in posts.items %}
+      <div class="panel panel-default">
+        <div class="panel-body">
+          <div class="media">
+            <div class="media-left">
+              <img src="{{ post.author.gravatar_url(40) }}" class="img-circle" width="40" height="40">
+            </div>
+            <div class="media-body">
+              <h3 style="margin-top:0;">
+                <a href="{{ url_for('review_detail', post_id=post.id) }}">{{ post.title }}</a>
+              </h3>
+              <p class="text-muted" style="font-size:13px;">
+                Tác giả: <a href="{{ url_for('profile', username=post.author.username) }}">{{ post.author.username }}</a>
+                &middot; {{ post.created_at.strftime('%d/%m/%Y') }}
+                {% if post.movie_title %} &middot; Phim: <strong>{{ post.movie_title }}</strong>{% endif %}
+                <span class="score-badge pull-right">{{ post.score }}/10 ★</span>
+              </p>
+              <div style="color:#555;font-size:14px;">
+                {{ post.body_md[:180] }}...
+                <a href="{{ url_for('review_detail', post_id=post.id) }}">Đọc toàn bộ bài viết &rarr;</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    {% else %}
+      <div class="alert alert-info">Chưa có bài review nào được đăng tải.</div>
+    {% endfor %}
+
+    <!-- Pagination -->
+    <nav class="text-center">
+      <ul class="pager">
+        {% if posts.has_prev %}
+          <li class="previous"><a href="{{ url_for('review_list', page=posts.prev_num) }}">&larr; Trang trước</a></li>
+        {% else %}
+          <li class="previous disabled"><a href="#">&larr; Trang trước</a></li>
+        {% endif %}
+
+        <li><span>Trang {{ posts.page }} / {{ posts.pages or 1 }}</span></li>
+
+        {% if posts.has_next %}
+          <li class="next"><a href="{{ url_for('review_list', page=posts.next_num) }}">Trang sau &rarr;</a></li>
+        {% else %}
+          <li class="next disabled"><a href="#">Trang sau &rarr;</a></li>
+        {% endif %}
+      </ul>
+    </nav>
+  </div>
+
+  <div class="col-md-3">
+    <div class="panel panel-default" style="margin-top:20px;">
+      <div class="panel-heading">📌 Về CMS Phê Bình</div>
+      <div class="panel-body" style="font-size:13px;">
+        <p>Hệ thống cho phép các <strong>Critic</strong> và <strong>Admin</strong> soạn thảo bài viết bằng cú pháp Markdown (tiêu đề, trích dẫn, in đậm, danh sách).</p>
+        <p>Toàn bộ nội dung trước khi xuất bản đều qua bộ lọc <code>bleach.clean()</code> nhằm chống tấn công Stored XSS.</p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

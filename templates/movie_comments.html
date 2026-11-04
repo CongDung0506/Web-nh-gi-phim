@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+
+{% block page_title %}Cảm nhận & Đánh giá: {{ movie.title }} — CineVerse{% endblock %}
+
+{% block page_content %}
+<div class="row" style="margin-top:20px;">
+  <!-- Thong tin phim -->
+  <div class="col-md-4">
+    <div class="thumbnail" style="border:1px solid #e1e7ed;border-radius:4px;">
+      <img src="{{ movie.poster_url }}" alt="{{ movie.title }}" style="width:100%;height:320px;object-fit:cover;">
+      <div class="caption">
+        <h3 style="margin-top:5px;font-weight:bold;">{{ movie.title }} ({{ movie.release_year }})</h3>
+        <p><span class="label label-info">{{ movie.genre.name }}</span> <span class="score-badge pull-right">{{ movie.rating_imdb }} ★ IMDb</span></p>
+        <p class="text-muted"><strong>Thời lượng:</strong> {{ movie.duration_minutes }} phút</p>
+        <p class="text-muted">
+          <strong>Đạo diễn:</strong>
+          {% for d in movie.directors %}{{ d.name }}{% if not loop.last %}, {% endif %}{% endfor %}
+        </p>
+        <hr>
+        <p style="font-size:13px;line-height:1.6;color:#555;">{{ movie.summary }}</p>
+        <p>
+          <a href="{{ url_for('movie_list') }}" class="btn btn-default btn-sm btn-block">&larr; Trở về danh sách phim</a>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Danh sach binh luan & Danh gia -->
+  <div class="col-md-8">
+    <div class="panel panel-default">
+      <div class="panel-heading" style="background:#fff;border-bottom:2px solid #e1e7ed;">
+        <h4 class="panel-title" style="font-weight:bold;font-size:16px;">
+          💬 Đánh giá & Cảm nhận từ Khán giả ({{ comments|length }})
+        </h4>
+      </div>
+      <div class="panel-body">
+        {% if current_user.is_authenticated %}
+          <!-- Form gui binh luan nhan xet -->
+          <div class="well" style="background:#fdfdfd;border:1px solid #e1e7ed;margin-bottom:25px;">
+            <h4 style="margin-top:0;font-weight:bold;font-size:15px;color:#14181c;">
+              ✍️ Viết nhận xét của bạn về phim "{{ movie.title }}"
+            </h4>
+            <form method="POST" action="{{ url_for('add_comment', movie_id=movie.id) }}">
+              <div class="row">
+                <div class="col-xs-12 col-sm-5" style="margin-bottom:12px;">
+                  <label for="rating" style="font-size:13px;font-weight:bold;">Chấm điểm tác phẩm:</label>
+                  <select name="rating" id="rating" class="form-control input-sm">
+                    <option value="5">⭐⭐⭐⭐⭐ (5 sao - Tuyệt tác)</option>
+                    <option value="4">⭐⭐⭐⭐ (4 sao - Rất hay)</option>
+                    <option value="3">⭐⭐⭐ (3 sao - Khá)</option>
+                    <option value="2">⭐⭐ (2 sao - Trung bình)</option>
+                    <option value="1">⭐ (1 sao - Kém)</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group" style="margin-bottom:10px;">
+                <label for="body_md" style="font-size:13px;font-weight:bold;">Nội dung cảm nhận (hỗ trợ Markdown):</label>
+                <textarea class="form-control" id="body_md" name="body_md" rows="3" placeholder="Chia sẻ cảm nhận, góc nhìn của bạn về kịch bản, diễn xuất, âm nhạc... (Hỗ trợ **đậm**, *nghiêng*, [link](url))" required></textarea>
+                <p class="text-muted" style="font-size:11px;margin-top:4px;margin-bottom:0;">
+                  * Hệ thống tự động kiểm tra và lọc mã HTML/Script độc hại để bảo vệ an toàn cho cộng đồng.
+                </p>
+              </div>
+              <button class="btn btn-primary" type="submit">
+                <span class="glyphicon glyphicon-send"></span> Gửi nhận xét
+              </button>
+            </form>
+          </div>
+        {% else %}
+          <div class="alert alert-warning" style="font-size:13px;">
+            <span class="glyphicon glyphicon-info-sign"></span> 
+            Vui lòng <strong>đăng nhập</strong> qua menu góc phải để viết nhận xét và theo dõi các thành viên khác.
+          </div>
+        {% endif %}
+
+        <!-- Danh sach cac binh luan da dang -->
+        {% for c in comments %}
+          <div class="media" style="padding:15px 0;border-bottom:1px solid #eee;">
+            <div class="media-left">
+              <a href="{{ url_for('profile', username=c.author.username) }}">
+                <img src="{{ c.author.gravatar_url(42) }}" class="media-object img-circle" width="42" height="42" alt="{{ c.author.username }}">
+              </a>
+            </div>
+            <div class="media-body">
+              <div class="d-flex justify-content-between align-items-center" style="margin-bottom:4px;">
+                <span style="font-size:15px;font-weight:bold;">
+                  <a href="{{ url_for('profile', username=c.author.username) }}" style="color:#14181c;">
+                    {{ c.author.username }}
+                  </a>
+                  <span class="label label-default" style="font-size:10px;font-weight:normal;margin-left:3px;">{{ c.author.role.name }}</span>
+                </span>
+
+                <!-- Nut Follow/Unfollow truc tiep tai binh luan -->
+                {% if current_user.is_authenticated and current_user.id != c.author.id %}
+                  <form method="POST" action="{{ url_for('toggle_follow', username=c.author.username) }}?next={{ url_for('movie_comments', movie_id=movie.id) }}" style="display:inline-block;margin-left:10px;">
+                    {% if current_user.is_following(c.author) %}
+                      <button type="submit" class="btn btn-default btn-xs" title="Bỏ theo dõi người này">
+                        <span class="glyphicon glyphicon-ok text-success"></span> Đang follow
+                      </button>
+                    {% else %}
+                      <button type="submit" class="btn btn-info btn-xs" title="Theo dõi người này vì bình luận hay">
+                        <span class="glyphicon glyphicon-plus"></span> Follow
+                      </button>
+                    {% endif %}
+                  </form>
+                {% endif %}
+
+                <span class="pull-right" style="color:#e5a00d;font-size:14px;">
+                  {% for i in range(c.rating) %}★{% endfor %}
+                </span>
+              </div>
+
+              <div class="text-muted" style="font-size:12px;margin-bottom:8px;">
+                {{ c.created_at.strftime('%d/%m/%Y %H:%M') }}
+              </div>
+
+              <!-- Noi dung binh luan da qua bleach sanitize an toan -->
+              <div style="font-size:14px;color:#2c3440;line-height:1.6;background:#fafafa;padding:10px 14px;border-radius:4px;border-left:3px solid #00e054;">
+                {{ c.body_html | safe }}
+              </div>
+            </div>
+          </div>
+        {% else %}
+          <p class="text-muted text-center" style="padding:30px 0;">
+            Chưa có đánh giá nào cho phim này. Hãy là người đầu tiên chia sẻ cảm nhận!
+          </p>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

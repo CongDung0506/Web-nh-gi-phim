@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block page_title %}{{ post.title }} — CineVerse Review{% endblock %}
+
+{% block page_content %}
+<div class="row" style="margin-top:20px;">
+  <div class="col-md-9">
+    <div class="panel panel-default">
+      <div class="panel-body" style="padding:30px;">
+        <h1 style="margin-top:0;font-weight:bold;color:#14181c;">{{ post.title }}</h1>
+        <p class="text-muted" style="padding-bottom:15px;border-bottom:1px solid #eee;">
+          <img src="{{ post.author.gravatar_url(24) }}" class="img-circle" width="24" height="24" style="margin-right:5px;">
+          Được viết bởi <a href="{{ url_for('profile', username=post.author.username) }}"><strong>{{ post.author.username }}</strong></a>
+          &middot; Ngày đăng: {{ post.created_at.strftime('%d/%m/%Y') }}
+          {% if post.movie_title %}
+            &middot; Tác phẩm: <strong>{{ post.movie_title }}</strong>
+          {% endif %}
+          <span class="score-badge pull-right" style="font-size:15px;">Điểm: {{ post.score }}/10 ★</span>
+        </p>
+
+        <!-- Noi dung da duoc sanitize chong XSS, an toan de render bang |safe -->
+        <div class="review-body" style="font-size:16px;line-height:1.7;color:#2c3440;margin-top:25px;">
+          {{ post.body_html | safe }}
+        </div>
+
+        <hr style="margin-top:40px;">
+        <p>
+          <a href="{{ url_for('review_list') }}" class="btn btn-default">&larr; Quay lại danh sách Review</a>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-3">
+    <div class="panel panel-default">
+      <div class="panel-heading">Tác giả bài viết</div>
+      <div class="panel-body text-center">
+        <img src="{{ post.author.gravatar_url(64) }}" class="img-circle" width="64" height="64" style="margin-bottom:10px;">
+        <h4 style="margin-top:0;"><a href="{{ url_for('profile', username=post.author.username) }}">{{ post.author.username }}</a></h4>
+        <span class="label label-info">{{ post.author.role.name }}</span>
+        {% if post.author.bio %}
+          <p class="text-muted" style="font-size:12px;margin-top:10px;">{{ post.author.bio }}</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

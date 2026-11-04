@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block page_title %}Kho phim điện ảnh — CineVerse{% endblock %}
+
+{% block page_content %}
+<div class="page-header" style="margin-top:10px;">
+  <h2>Danh mục các tác phẩm điện ảnh</h2>
+  <p class="text-muted">Khám phá các bộ phim kinh điển và cùng cộng đồng khán giả trao đổi, đánh giá cảm nhận.</p>
+</div>
+
+<div class="row">
+  {% for movie in movies %}
+    <div class="col-sm-6 col-md-3">
+      <div class="thumbnail" style="min-height:380px;">
+        <img src="{{ movie.poster_url }}" alt="{{ movie.title }}" style="height:200px;width:100%;object-fit:cover;">
+        <div class="caption">
+          <h4 style="font-size:16px;font-weight:bold;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+            {{ movie.title }}
+          </h4>
+          <p style="margin-bottom:6px;">
+            <span class="tag-genre">{{ movie.genre.name }}</span>
+            <span class="label label-success pull-right">{{ movie.rating_imdb }} ★</span>
+          </p>
+          <p class="text-muted" style="font-size:12px;">
+            Năm phát hành: <strong>{{ movie.release_year }}</strong> &middot; {{ movie.duration_minutes }} phút
+          </p>
+          <p class="text-muted" style="font-size:12px;height:36px;overflow:hidden;">
+            {{ movie.summary }}
+          </p>
+          <p style="margin-top:10px;">
+            <a href="{{ url_for('movie_comments', movie_id=movie.id) }}" class="btn btn-primary btn-block btn-sm">
+              Xem đánh giá ({{ movie.comments|length }}) &rarr;
+            </a>
+          </p>
+        </div>
+      </div>
+    </div>
+  {% else %}
+    <div class="col-md-12 alert alert-info">Chưa có dữ liệu phim nào.</div>
+  {% endfor %}
+</div>
+{% endblock %}

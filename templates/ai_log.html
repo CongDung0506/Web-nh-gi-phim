@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block page_title %}Nhật ký sử dụng công cụ AI — CineVerse CMS{% endblock %}
+
+{% block page_content %}
+<div class="row" style="margin-top:20px;">
+  <div class="col-md-10 col-md-offset-1">
+    <div class="panel panel-default">
+      <div class="panel-body" style="padding:35px;line-height:1.7;">
+        {{ content | safe }}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

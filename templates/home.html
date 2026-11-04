@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block page_title %}Trang chủ — CineVerse{% endblock %}
+
+{% block page_content %}
+<div class="row">
+  <div class="col-md-8">
+    <div class="page-header" style="margin-top:10px;">
+      <h2>Bài viết Review Phim mới nhất</h2>
+      <p class="text-muted">
+        {% if show_followed %}
+          Đang lọc hiển thị bài viết từ <strong>những nhà phê bình bạn đang theo dõi</strong>.
+          <a href="{{ url_for('home', show='all') }}" class="btn btn-xs btn-default">Xem tất cả bài viết</a>
+        {% else %}
+          Đang hiển thị <strong>tất cả</strong> bài viết đánh giá trong cộng đồng.
+          {% if current_user.is_authenticated %}
+            <a href="{{ url_for('home', show='followed') }}" class="btn btn-xs btn-primary">Chỉ xem người tôi follow</a>
+          {% endif %}
+        {% endif %}
+      </p>
+    </div>
+
+    {% for post in posts %}
+      <div class="panel panel-default">
+        <div class="panel-body">
+          <div class="media">
+            <div class="media-left">
+              <img src="{{ post.author.gravatar_url(48) }}" class="media-object img-circle" width="48" height="48">
+            </div>
+            <div class="media-body">
+              <h3 class="media-heading" style="margin-top:0;">
+                <a href="{{ url_for('review_detail', post_id=post.id) }}">{{ post.title }}</a>
+              </h3>
+              <p class="text-muted" style="font-size:13px;margin-bottom:8px;">
+                Tác giả: <a href="{{ url_for('profile', username=post.author.username) }}">{{ post.author.username }}</a>
+                &middot; Ngày đăng: {{ post.created_at.strftime('%d/%m/%Y') }}
+                {% if post.movie_title %}
+                  &middot; Phim: <strong>{{ post.movie_title }}</strong>
+                {% endif %}
+                <span class="score-badge pull-right">{{ post.score }}/10 ★</span>
+              </p>
+              <p class="text-muted" style="margin-bottom:0;">
+                {{ post.body_md[:160] }}...
+                <a href="{{ url_for('review_detail', post_id=post.id) }}">Đọc tiếp &rarr;</a>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    {% else %}
+      <div class="alert alert-warning">
+        Không có bài viết nào phù hợp. (Nếu bạn đang bật bộ lọc "Chỉ xem người tôi follow", hãy thử theo dõi thêm các nhà phê bình khác!)
+      </div>
+    {% endfor %}
+  </div>
+
+  <div class="col-md-4">
+    <div class="panel panel-default" style="margin-top:20px;">
+      <div class="panel-heading">🎬 Phim Được Đánh Giá Cao</div>
+      <div class="list-group">
+        {% for movie in featured_movies %}
+          <a href="{{ url_for('movie_comments', movie_id=movie.id) }}" class="list-group-item">
+            <h5 class="list-group-item-heading" style="font-weight:bold;">
+              {{ movie.title }} ({{ movie.release_year }})
+              <span class="label label-success pull-right">{{ movie.rating_imdb }} ★</span>
+            </h5>
+            <p class="list-group-item-text text-muted" style="font-size:12px;">
+              {{ movie.genre.name }} &middot; {{ movie.duration_minutes }} phút
+            </p>
+          </a>
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="panel panel-info">
+      <div class="panel-heading">💡 Hướng dẫn sử dụng</div>
+      <div class="panel-body" style="font-size:13px;">
+        <p>1. Bấm <strong>Đăng nhập</strong> hoặc <strong>Đăng ký</strong> tài khoản trên thanh menu.</p>
+        <p>2. Khi đọc bình luận tại mục <strong>Kho phim</strong>, bạn có thể bấm <code>Follow</code> những người nhận xét hay.</p>
+        <p>3. Bấm <strong>"Chỉ xem người tôi follow"</strong> để cá nhân hoá bảng tin theo những nhà phê bình bạn quan tâm.</p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
