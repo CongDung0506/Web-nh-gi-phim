@@ -108,7 +108,7 @@ def seed_data_internal():
             db.session.flush()
         directors_map[name] = d
 
-    # 4. Kho 20 Phim bom tan & kinh dien da the loai kem anh chan thuc, chat luong cao
+    # 4. Kho 20 Phim voi Poster chinh thuc 100% tu TMDB CDN (Chuan dien anh the gioi)
     movies_data = [
         # --- THE LOAI: TINH CAM / LANG MAN ---
         {
@@ -117,7 +117,7 @@ def seed_data_internal():
             "duration_minutes": 194,
             "rating_imdb": 7.9,
             "summary": "Bản tình ca bất hủ vượt giai cấp giữa chàng họa sĩ nghèo Jack Dawson và tiểu thư Rose DeWitt Bukater trên chuyến tàu định mệnh chấn động thế giới.",
-            "poster_url": "https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=600&q=80",
+            "poster_url": "https://image.tmdb.org/t/p/w500/9xjZS2rlVxm8SFx8kPC3aIGCOYQ.jpg",
             "genre": genres_map["Tình Cảm / Lãng Mạn"],
             "directors": [directors_map["James Cameron"]]
         },
@@ -127,7 +127,7 @@ def seed_data_internal():
             "duration_minutes": 128,
             "rating_imdb": 8.0,
             "summary": "Một nghệ sĩ dương cầm jazz đầy hoài bão và một nữ diễn viên trẻ đem lòng yêu nhau tại thành phố Los Angeles hoa lệ, nơi họ phải chọn lựa giữa tình yêu và ước mơ nghệ thuật.",
-            "poster_url": "https://images.unsplash.com/photo-1514306191717-452ec28c7814?auto=format&fit=crop&w=600&q=80",
+            "poster_url": "https://image.tmdb.org/t/p/w500/uDO8zWDhfWwoFdKS4fzkUJt0Rf0.jpg",
             "genre": genres_map["Tình Cảm / Lãng Mạn"],
             "directors": [directors_map["Damien Chazelle"]]
         },
@@ -137,7 +137,7 @@ def seed_data_internal():
             "duration_minutes": 106,
             "rating_imdb": 7.9,
             "summary": "Nora và Hae Sung - hai người bạn thời thơ ấu tại Hàn Quốc - hội ngộ tại New York sau hai thập kỷ xa cách, đối diện với khái niệm 'In-Yun' (nhân duyên tiền kiếp) và sự trớ trêu của thời gian.",
-            "poster_url": "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=600&q=80",
+            "poster_url": "https://image.tmdb.org/t/p/w500/k3waqVXSnvCZWfJYNtdamTgTtTA.jpg",
             "genre": genres_map["Tình Cảm / Lãng Mạn"],
             "directors": [directors_map["Celine Song"]]
         },
@@ -147,7 +147,7 @@ def seed_data_internal():
             "duration_minutes": 123,
             "rating_imdb": 7.8,
             "summary": "Tim Lake phát hiện khả năng du hành thời gian của gia đình và dùng nó để tìm kiếm tình yêu đích thực của đời mình, nhận ra bài học sâu sắc về việc trân trọng từng phút giây hiện tại.",
-            "poster_url": "https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?auto=format&fit=crop&w=600&q=80",
+            "poster_url": "https://image.tmdb.org/t/p/w500/ls6zswrOZVhCXQBh96DlbnLBajM.jpg",
             "genre": genres_map["Tình Cảm / Lãng Mạn"],
             "directors": [directors_map["Richard Curtis"]]
         },
@@ -159,7 +159,7 @@ def seed_data_internal():
             "duration_minutes": 112,
             "rating_imdb": 7.5,
             "summary": "Cặp vợ chồng nhà trừ tà ngoại cảm Ed và Lorraine Warren tới điều tra ngôi nhà trang trại hẻo lánh của gia đình Perron tại Rhode Island, nơi bị một thực thể tà ác hắc ám ngự trị.",
-            "poster_url": "https://images.unsplash.com/photo-1509248961158-e54f6934749c?auto=format&fit=crop&w=600&q=80",
+            "poster_url": "https://image.tmdb.org/t/p/w500/wVYREutTvI2tmxr6ujrHT704wGF.jpg",
             "genre": genres_map["Kinh Dị / Bí Ẩn"],
             "directors": [directors_map["James Wan"]]
         },
@@ -169,7 +169,7 @@ def seed_data_internal():
             "duration_minutes": 134,
             "rating_imdb": 7.1,
             "summary": "Một nhóm gồm hai pháp sư trẻ, một thầy phong thủy và chuyên gia mai táng nhận lời khai quật ngôi mộ tổ bí ẩn của một gia tộc giàu có, vô tình giải phóng ác linh kinh hoàng chôn sâu dưới lòng đất.",
-            "poster_url": "https://images.unsplash.com/photo-1509114397022-ed747cca3f65?auto=format&fit=crop&w=600&q=80",
+            "poster_url": "https://image.tmdb.org/t/p/w500/pPElE8npavUirQWmscJUGZyPiP6.jpg",
             "genre": genres_map["Kinh Dị / Bí Ẩn"],
             "directors": [directors_map["Jang Jae-hyun"]]
         },
@@ -179,7 +179,7 @@ def seed_data_internal():
             "duration_minutes": 90,
             "rating_imdb": 7.5,
             "summary": "Trong một thế giới hậu tận thế bị xâm lăng bởi loài quái vật mù săn mồi bằng thính giác siêu nhạy, một gia đình phải sống trong sự im lặng tuyệt đối để giữ mạng sống cho con cái.",
-            "poster_url": "https://images.unsplash.com/photo-1516410529446-2c777cb7366d?auto=format&fit=crop&w=600&q=80",
+            "poster_url": "https://image.tmdb.org/t/p/w500/nAU74GmpUk7t5iklEp3bufwDq4n.jpg",
             "genre": genres_map["Kinh Dị / Bí Ẩn"],
             "directors": [directors_map["John Krasinski"]]
         },
@@ -189,7 +189,7 @@ def seed_data_internal():
             "duration_minutes": 127,
             "rating_imdb": 7.3,
             "summary": "Sau cái chết của người bà bí ẩn, gia đình Graham bắt đầu khám phá ra những bí mật đen tối rùng rợn được truyền qua nhiều thế hệ gắn liền với giáo phái tôn thờ quỷ Paimon.",
-            "poster_url": "https://images.unsplash.com/photo-1508739773434-c26b3d09e071?auto=format&fit=crop&w=600&q=80",
+            "poster_url": "https://image.tmdb.org/t/p/w500/wq3vuQzQgbS83zX3malAFWMsSwX.jpg",
             "genre": genres_map["Kinh Dị / Bí Ẩn"],
             "directors": [directors_map["Ari Aster"]]
         },
@@ -201,7 +201,7 @@ def seed_data_internal():
             "duration_minutes": 169,
             "rating_imdb": 8.7,
             "summary": "Một nhóm nhà khoa học và phi hành gia du hành qua lỗ sâu gần sao Thổ để tìm kiếm hành tinh sống mới, khám phá các chiều không gian và sức mạnh của tình yêu thương.",
-            "poster_url": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=600&q=80",
+            "poster_url": "https://image.tmdb.org/t/p/w500/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg",
             "genre": genres_map["Sci-Fi / Viễn Tưởng"],
             "directors": [directors_map["Christopher Nolan"]]
         },
@@ -211,7 +211,7 @@ def seed_data_internal():
             "duration_minutes": 166,
             "rating_imdb": 8.6,
             "summary": "Paul Atreides hợp lực cùng Chani và tộc người Fremen trên sa mạc cằn cỗi Arrakis, dấn thân vào cuộc thánh chiến báo thù những kẻ đã tàn sát gia tộc mình.",
-            "poster_url": "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=600&q=80",
+            "poster_url": "https://image.tmdb.org/t/p/w500/8b8R8l88Qje9dn9OE8PY05Nxl1X.jpg",
             "genre": genres_map["Sci-Fi / Viễn Tưởng"],
             "directors": [directors_map["Denis Villeneuve"]]
         },
@@ -221,7 +221,7 @@ def seed_data_internal():
             "duration_minutes": 192,
             "rating_imdb": 7.6,
             "summary": "Jake Sully và Neytiri đưa gia đình rời khỏi khu rừng để nương náu tại bộ tộc biển Metkayina, bảo vệ kỳ quan sinh thái Pandora trước cuộc xâm lăng của loài người.",
-            "poster_url": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=600&q=80",
+            "poster_url": "https://image.tmdb.org/t/p/w500/t6HIqrRAclMCA60NsSmeqe9RmNV.jpg",
             "genre": genres_map["Sci-Fi / Viễn Tưởng"],
             "directors": [directors_map["James Cameron"]]
         },
@@ -233,7 +233,7 @@ def seed_data_internal():
             "duration_minutes": 152,
             "rating_imdb": 9.0,
             "summary": "Khi tên tội phạm điên loạn Joker gieo rắc hỗn loạn khắp Gotham, Batman phải đứng lên bảo vệ công lý và đương đầu với phép thử tàn khốc về đạo đức và nhân tính.",
-            "poster_url": "https://images.unsplash.com/photo-1509347528160-9a9e33742cdb?auto=format&fit=crop&w=600&q=80",
+            "poster_url": "https://image.tmdb.org/t/p/w500/qJ2tW6WMUDux911r6m7haRef0WH.jpg",
             "genre": genres_map["Hành Động / Phiêu Lưu"],
             "directors": [directors_map["Christopher Nolan"]]
         },
@@ -243,7 +243,7 @@ def seed_data_internal():
             "duration_minutes": 169,
             "rating_imdb": 7.7,
             "summary": "Sát thủ huyền thoại John Wick tìm con đường đánh bại Hội Đồng Tối Cao High Table, trải qua những cuộc thư hùng nảy lửa từ sa mạc Morocco, Osaka đến bảo tàng Louvre và Khải Hoàn Môn Paris.",
-            "poster_url": "https://images.unsplash.com/photo-1578632767115-351597cf2477?auto=format&fit=crop&w=600&q=80",
+            "poster_url": "https://image.tmdb.org/t/p/w500/vZloFAK7NmvMGKE7VkF5UHaz0I.jpg",
             "genre": genres_map["Hành Động / Phiêu Lưu"],
             "directors": [directors_map["Chad Stahelski"]]
         },
@@ -253,7 +253,7 @@ def seed_data_internal():
             "duration_minutes": 148,
             "rating_imdb": 8.8,
             "summary": "Một đạo chích chuyên thâm nhập tiềm thức nhận phi vụ đảo ngược: cấy ghép một ý tưởng vào sâu trong giấc mơ của người thừa kế tập đoàn quyền lực nhất.",
-            "poster_url": "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?auto=format&fit=crop&w=600&q=80",
+            "poster_url": "https://image.tmdb.org/t/p/w500/edv5CZvWj09upOsy2Y6IwDhK8bt.jpg",
             "genre": genres_map["Hành Động / Phiêu Lưu"],
             "directors": [directors_map["Christopher Nolan"]]
         },
@@ -265,7 +265,7 @@ def seed_data_internal():
             "duration_minutes": 125,
             "rating_imdb": 8.6,
             "summary": "Cô bé Chihiro 10 tuổi vô tình bước vào thế giới thần bí của các linh hồn, nơi cha mẹ bị biến thành heo và cô phải làm việc tại nhà tắm công cộng của mụ phù thủy Yubaba.",
-            "poster_url": "https://images.unsplash.com/photo-1503899036084-c55cdd92da26?auto=format&fit=crop&w=600&q=80",
+            "poster_url": "https://image.tmdb.org/t/p/w500/39wmItIWsg5sZMyRUHLkWBcuVCM.jpg",
             "genre": genres_map["Hoạt Hình / Anime"],
             "directors": [directors_map["Hayao Miyazaki"]]
         },
@@ -275,7 +275,7 @@ def seed_data_internal():
             "duration_minutes": 106,
             "rating_imdb": 8.4,
             "summary": "Mitsuha - nữ sinh vùng quê hẻo lánh và Taki - nam sinh trung học tại Tokyo hoa lệ hoán đổi thân xác cho nhau qua những giấc mơ, chạy đua với thiên tai để cứu lấy nhau.",
-            "poster_url": "https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=600&q=80",
+            "poster_url": "https://image.tmdb.org/t/p/w500/q719jXXEzOoYaps6babgKnONONX.jpg",
             "genre": genres_map["Hoạt Hình / Anime"],
             "directors": [directors_map["Makoto Shinkai"]]
         },
@@ -285,7 +285,7 @@ def seed_data_internal():
             "duration_minutes": 140,
             "rating_imdb": 8.7,
             "summary": "Miles Morales du hành qua đa vũ trụ nhện, đối đầu với Spider-Society do Miguel O'Hara dẫn đầu để định nghĩa lại ý nghĩa thực sự của việc làm một người anh hùng.",
-            "poster_url": "https://images.unsplash.com/photo-1635805737707-575885ab0820?auto=format&fit=crop&w=600&q=80",
+            "poster_url": "https://image.tmdb.org/t/p/w500/8Vt6mWEReuy4Of61Lnj5Xj704m8.jpg",
             "genre": genres_map["Hoạt Hình / Anime"],
             "directors": [directors_map["Christopher Nolan"]]
         },
@@ -297,7 +297,7 @@ def seed_data_internal():
             "duration_minutes": 180,
             "rating_imdb": 8.9,
             "summary": "Bộ phim đoạt 7 giải Oscar thuật lại cuộc đời đầy giằng xé của nhà vật lý lý thuyết J. Robert Oppenheimer - người đứng đầu Dự án Manhattan tạo ra bom nguyên tử.",
-            "poster_url": "https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=600&q=80",
+            "poster_url": "https://image.tmdb.org/t/p/w500/8Gxv8gSFCU0XGDykEGv7zR1n2ua.jpg",
             "genre": genres_map["Chính Kịch / Tâm Lý"],
             "directors": [directors_map["Christopher Nolan"]]
         },
@@ -307,7 +307,7 @@ def seed_data_internal():
             "duration_minutes": 132,
             "rating_imdb": 8.5,
             "summary": "Gia đình họ Kim thất nghiệp lập mưu trà trộn vào làm việc cho gia đình tài phiệt họ Park, mở ra một chuỗi bi kịch nghẹt thở và châm biếm sâu cay về phân hóa xã hội.",
-            "poster_url": "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=600&q=80",
+            "poster_url": "https://image.tmdb.org/t/p/w500/7IiTTgloJzvGI1TAYymCfbfl3vT.jpg",
             "genre": genres_map["Chính Kịch / Tâm Lý"],
             "directors": [directors_map["Bong Joon-ho"]]
         },
@@ -317,7 +317,7 @@ def seed_data_internal():
             "duration_minutes": 142,
             "rating_imdb": 9.3,
             "summary": "Andy Dufresne bị kết án tù chung thân oan uổng tại nhà tù khắc nghiệt Shawshank. Suốt 19 năm kiên trì và hy vọng, anh đã thực hiện cuộc vượt ngục kỳ tích nhất lịch sử điện ảnh.",
-            "poster_url": "https://images.unsplash.com/photo-1485846234645-a62644f84728?auto=format&fit=crop&w=600&q=80",
+            "poster_url": "https://image.tmdb.org/t/p/w500/lyQBXzOQSuE59IsHyhrp0qIiPAz.jpg",
             "genre": genres_map["Chính Kịch / Tâm Lý"],
             "directors": [directors_map["Frank Darabont"]]
         }
